@@ -16,26 +16,33 @@ export function Level3SuspiciousWeb({ onComplete, onNextLevel, isCompleted, curr
   const [solved, setSolved] = useState(isCompleted);
   const [attempts, setAttempts] = useState(0);
 
+  // Sync solved state if isCompleted changes
+  React.useEffect(() => {
+    setSolved(isCompleted);
+    if (!isCompleted) {
+      setQuizFeedback(null);
+      setAttempts(0);
+      setInspectedClues(new Set());
+      setActiveInspector(LEVEL_3_CLUES[0]);
+      setSelectedQuizOption(null);
+    }
+  }, [isCompleted]);
+
   const handleInspectZone = (clue) => {
-    sound.playClick();
     setActiveInspector(clue);
     setInspectedClues((prev) => {
       const next = new Set(prev);
-      if (!next.has(clue.id)) {
-        sound.playBlockPlace();
-        next.add(clue.id);
-      }
+      next.add(clue.id);
       return next;
     });
   };
 
   const handleQuizAnswer = (option) => {
-    sound.playClick();
     setSelectedQuizOption(option);
     setAttempts((prev) => prev + 1);
 
     if (option.isCorrect) {
-      sound.playCorrect();
+      // Meaningful event: Correct technical deduction & Clue Found
       sound.playClueFound();
       fireClueDiscoverySparks();
       setSolved(true);

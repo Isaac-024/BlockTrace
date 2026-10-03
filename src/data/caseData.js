@@ -59,21 +59,27 @@ export const CASE_METADATA = {
   ]
 };
 
-export const INITIAL_GAME_STATE = {
-  currentScreen: 'home', // 'home' | 'level-1' | 'level-2' | 'level-3' | 'level-4' | 'level-5' | 'victory'
-  unlockedLevel: 1,
-  score: 0,
-  xp: 0,
-  timerSeconds: 0,
-  timerRunning: false,
-  clues: [],
-  levelResults: {
-    1: { completed: false, score: 0, attempts: 0 },
-    2: { completed: false, score: 0, attempts: 0 },
-    3: { completed: false, score: 0, attempts: 0 },
-    4: { completed: false, score: 0, attempts: 0 },
-    5: { completed: false, score: 0, attempts: 0 }
-  },
-  soundMuted: false,
-  scanlinesEnabled: true
-};
+export function createDefaultGameState(startScreen = 'home') {
+  return {
+    gameId: Date.now(),
+    currentScreen: startScreen, // 'home' | 'level-1' | 'level-2' | 'level-3' | 'level-4' | 'level-5' | 'victory'
+    unlockedLevel: 1,
+    score: 0,
+    xp: 0,
+    timerSeconds: 0,
+    timerRunning: startScreen !== 'home' && startScreen !== 'victory',
+    clues: [],
+    levelResults: {
+      1: { completed: false, score: 0, attempts: 0 },
+      2: { completed: false, score: 0, attempts: 0 },
+      3: { completed: false, score: 0, attempts: 0 },
+      4: { completed: false, score: 0, attempts: 0 },
+      5: { completed: false, score: 0, attempts: 0 }
+    },
+    soundMuted: false,
+    scanlinesEnabled: true,
+    isCompleted: false
+  };
+}
+
+export const INITIAL_GAME_STATE = createDefaultGameState('home');

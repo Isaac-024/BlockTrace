@@ -5,7 +5,6 @@ import { LevelNavigator } from './LevelNavigator';
 import { ClueNotebookModal } from './ClueNotebookModal';
 import { HowToPlayModal } from './HowToPlayModal';
 import { VoxelButton } from '../common/VoxelButton';
-import { sound } from '../../utils/soundSynthesizer';
 
 export function GameHUD({
   state,
@@ -91,7 +90,6 @@ export function GameHUD({
             {/* Clues Notebook Button */}
             <button
               onClick={() => {
-                sound.playClick();
                 setShowNotebook(true);
               }}
               className="px-2.5 py-1 bg-cyan-950/80 border border-cyan-700 hover:border-cyber-cyan text-cyber-cyan hover:bg-cyan-900/60 transition-all flex items-center gap-1.5 active:translate-y-0.5"
@@ -145,7 +143,6 @@ export function GameHUD({
               {/* Help / Guide */}
               <button
                 onClick={() => {
-                  sound.playClick();
                   setShowHowToPlay(true);
                 }}
                 className="p-1.5 border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"

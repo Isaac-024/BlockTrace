@@ -14,8 +14,17 @@ export function Level2Password({ onComplete, onNextLevel, isCompleted, currentCl
   const [feedback, setFeedback] = useState(null);
   const [solved, setSolved] = useState(isCompleted);
 
+  // Sync solved state if isCompleted changes
+  React.useEffect(() => {
+    setSolved(isCompleted);
+    if (!isCompleted) {
+      setFeedback(null);
+      setAttempts(0);
+      setSelectedPwd(LEVEL_2_PASSWORDS[0]);
+    }
+  }, [isCompleted]);
+
   const handleSelect = (pwd) => {
-    sound.playClick();
     setSelectedPwd(pwd);
   };
 
@@ -24,7 +33,7 @@ export function Level2Password({ onComplete, onNextLevel, isCompleted, currentCl
     setAttempts((prev) => prev + 1);
 
     if (pwd.isCorrect) {
-      sound.playCorrect();
+      // Meaningful event: Correct password audit & clue discovered
       sound.playClueFound();
       fireClueDiscoverySparks();
       setSolved(true);

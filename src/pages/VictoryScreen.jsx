@@ -12,7 +12,6 @@ export function VictoryScreen({ state, onPlayAgain, onReturnHome }) {
   const timeFormatted = formatTime(state.timerSeconds);
 
   useEffect(() => {
-    sound.playVictory();
     fireCyberConfetti();
     const timer = setTimeout(() => {
       fireCyberConfetti();

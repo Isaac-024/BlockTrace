@@ -20,9 +20,18 @@ export function Level4TraceAttack({ onComplete, onNextLevel, isCompleted, curren
   const [solved, setSolved] = useState(isCompleted);
   const [attempts, setAttempts] = useState(0);
 
+  // Sync solved state if isCompleted changes
+  React.useEffect(() => {
+    setSolved(isCompleted);
+    if (!isCompleted) {
+      setFeedback(null);
+      setAttempts(0);
+      setCards([LEVEL_4_CARDS[2], LEVEL_4_CARDS[0], LEVEL_4_CARDS[3], LEVEL_4_CARDS[1]]);
+    }
+  }, [isCompleted]);
+
   // Drag & Drop Handlers
   const handleDragStart = (e, index) => {
-    sound.playClick();
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = 'move';
   };
@@ -36,7 +45,6 @@ export function Level4TraceAttack({ onComplete, onNextLevel, isCompleted, curren
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === dropIndex) return;
 
-    sound.playBlockPlace();
     const newCards = [...cards];
     const [moved] = newCards.splice(draggedIndex, 1);
     newCards.splice(dropIndex, 0, moved);
@@ -50,7 +58,6 @@ export function Level4TraceAttack({ onComplete, onNextLevel, isCompleted, curren
     const targetIndex = currentIndex + direction;
     if (targetIndex < 0 || targetIndex >= cards.length) return;
 
-    sound.playBlockPlace();
     const newCards = [...cards];
     const temp = newCards[currentIndex];
     newCards[currentIndex] = newCards[targetIndex];
@@ -60,7 +67,6 @@ export function Level4TraceAttack({ onComplete, onNextLevel, isCompleted, curren
   };
 
   const handleResetTimeline = () => {
-    sound.playClick();
     setCards([LEVEL_4_CARDS[2], LEVEL_4_CARDS[0], LEVEL_4_CARDS[3], LEVEL_4_CARDS[1]]);
     setFeedback(null);
   };
@@ -72,7 +78,7 @@ export function Level4TraceAttack({ onComplete, onNextLevel, isCompleted, curren
     const isCorrect = cards.every((card, idx) => card.stepNumberCorrect === idx + 1);
 
     if (isCorrect) {
-      sound.playCorrect();
+      // Meaningful event: Correct kill chain timeline & Clue Found
       sound.playClueFound();
       fireClueDiscoverySparks();
       setSolved(true);

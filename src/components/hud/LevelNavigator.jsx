@@ -1,7 +1,6 @@
 import React from 'react';
-import { CASE_METADATA } from '../../data/caseData';
+import { CASE_METADATA } from '../../data/caseData.js';
 import { Check, Lock, Play } from 'lucide-react';
-import { sound } from '../../utils/soundSynthesizer';
 
 export function LevelNavigator({ currentScreen, unlockedLevel, levelResults, onSelectLevel }) {
   const currentLevelNum = currentScreen.startsWith('level-')
@@ -31,7 +30,6 @@ export function LevelNavigator({ currentScreen, unlockedLevel, levelResults, onS
             disabled={isLocked}
             onClick={() => {
               if (isUnlocked) {
-                sound.playClick();
                 onSelectLevel(`level-${lvl.id}`);
               }
             }}

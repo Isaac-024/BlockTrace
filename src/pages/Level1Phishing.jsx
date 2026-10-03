@@ -14,10 +14,18 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
   const [feedback, setFeedback] = useState(null); // { type: 'success' | 'error', title: '', message: '', details: [] }
   const [solved, setSolved] = useState(isCompleted);
 
+  // Sync solved state if isCompleted changes
+  React.useEffect(() => {
+    setSolved(isCompleted);
+    if (!isCompleted) {
+      setFeedback(null);
+      setAttempts(0);
+      setSelectedEmail(LEVEL_1_EMAILS[0]);
+    }
+  }, [isCompleted]);
+
   const handleSelectEmail = (email) => {
-    sound.playClick();
     setSelectedEmail(email);
-    // Don't auto-clear feedback if already solved
     if (!solved) {
       setFeedback(null);
     }
@@ -28,8 +36,7 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
     setAttempts((prev) => prev + 1);
 
     if (email.isMalicious) {
-      // Correct!
-      sound.playCorrect();
+      // Meaningful event: Correct answer & Clue Found
       sound.playClueFound();
       fireClueDiscoverySparks();
       setSolved(true);

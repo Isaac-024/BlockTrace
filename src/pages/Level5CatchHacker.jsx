@@ -16,8 +16,19 @@ export function Level5CatchHacker({ onComplete, onVictory, isCompleted, currentC
   const [solved, setSolved] = useState(isCompleted);
   const [attempts, setAttempts] = useState(0);
 
+  // Sync solved state if isCompleted changes
+  React.useEffect(() => {
+    setSolved(isCompleted);
+    if (!isCompleted) {
+      setFeedback(null);
+      setAttempts(0);
+      setSelectedSuspect(LEVEL_5_SUSPECTS[0]);
+      setInspectedSuspects(new Set([LEVEL_5_SUSPECTS[0].id]));
+      setConfirmAccuseModal(false);
+    }
+  }, [isCompleted]);
+
   const handleSelectSuspect = (suspect) => {
-    sound.playClick();
     setSelectedSuspect(suspect);
     setInspectedSuspects((prev) => {
       const next = new Set(prev);
@@ -27,7 +38,6 @@ export function Level5CatchHacker({ onComplete, onVictory, isCompleted, currentC
   };
 
   const handleTriggerAccuse = () => {
-    sound.playClick();
     setConfirmAccuseModal(true);
   };
 
