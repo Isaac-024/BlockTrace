@@ -29,11 +29,11 @@ console.assert(correctPasswords[0].clueDiscovered.number === 2, "Must yield Clue
 console.log("✔ Level 2 Verified: Strongest password is 'T9#kL2!xQ'");
 
 // 4. Level 3 Suspicious Website Check
-console.assert(LEVEL_3_CLUES.length === 4, "Level 3 must have 4 inspectable targets");
+console.assert(LEVEL_3_CLUES.length === 5, "Level 3 must have 5 inspectable targets");
 const correctQuizOpts = LEVEL_3_QUIZ.options.filter(o => o.isCorrect);
 console.assert(correctQuizOpts.length === 1, "Level 3 quiz must have 1 correct answer");
 console.assert(LEVEL_3_QUIZ.clueDiscovered.number === 3, "Must yield Clue 3");
-console.log("✔ Level 3 Verified: 4 Inspection targets & correct domain threat answer");
+console.log("✔ Level 3 Verified: 5 Inspection targets & correct domain threat answer");
 
 // 5. Level 4 Timeline Check
 console.assert(LEVEL_4_CARDS.length === 4, "Level 4 must have 4 cards");

@@ -16,23 +16,23 @@ export function VoxelButton({
     if (onClick) onClick(e);
   };
 
-  const baseStyles = "voxel-btn font-pixel text-center inline-flex items-center justify-center tracking-wider uppercase transition-all duration-75 select-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cyber-950";
+  const baseStyles = "voxel-btn font-pixel text-center inline-flex items-center justify-center tracking-wider uppercase select-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cyber-950";
 
   const sizeStyles = {
     sm: "text-[10px] px-3 py-1.5 gap-1.5",
     md: "text-xs px-5 py-2.5 gap-2",
-    lg: "text-sm px-7 py-3.5 gap-2.5"
+    lg: "text-xs sm:text-sm px-7 py-3.5 gap-2.5"
   };
 
   const variantStyles = {
-    cyan: "bg-cyber-cyan text-cyber-950 border-t-2 border-l-2 border-r-4 border-b-4 border-t-white/60 border-l-white/60 border-r-cyan-800 border-b-cyan-800 shadow-[3px_3px_0px_#042f2e] hover:bg-cyber-cyan-bright hover:shadow-[4px_4px_0px_#042f2e] active:shadow-[1px_1px_0px_#042f2e] focus:ring-cyber-cyan",
-    green: "bg-emerald-500 text-cyber-950 border-t-2 border-l-2 border-r-4 border-b-4 border-t-white/60 border-l-white/60 border-r-emerald-800 border-b-emerald-800 shadow-[3px_3px_0px_#064e3b] hover:bg-emerald-400 hover:shadow-[4px_4px_0px_#064e3b] active:shadow-[1px_1px_0px_#064e3b] focus:ring-emerald-400",
-    rose: "bg-rose-500 text-white border-t-2 border-l-2 border-r-4 border-b-4 border-t-rose-300/60 border-l-rose-300/60 border-r-rose-900 border-b-rose-900 shadow-[3px_3px_0px_#4c0519] hover:bg-rose-400 hover:shadow-[4px_4px_0px_#4c0519] active:shadow-[1px_1px_0px_#4c0519] focus:ring-rose-500",
-    amber: "bg-amber-400 text-cyber-950 border-t-2 border-l-2 border-r-4 border-b-4 border-t-white/60 border-l-white/60 border-r-amber-800 border-b-amber-800 shadow-[3px_3px_0px_#451a03] hover:bg-amber-300 hover:shadow-[4px_4px_0px_#451a03] active:shadow-[1px_1px_0px_#451a03] focus:ring-amber-400",
-    dark: "bg-voxel-card text-slate-200 border-t-2 border-l-2 border-r-4 border-b-4 border-t-slate-600 border-l-slate-600 border-r-cyber-950 border-b-cyber-950 shadow-[3px_3px_0px_#05080e] hover:bg-slate-700 hover:text-white active:shadow-[1px_1px_0px_#05080e] focus:ring-slate-400"
+    cyan: "bg-cyber-cyan text-cyber-950 border-t-2 border-l-2 border-r-[4px] border-b-[4px] border-t-white/80 border-l-white/80 border-r-cyan-900 border-b-cyan-900 shadow-[3px_3px_0px_#002b26] hover:bg-cyber-cyan-bright hover:shadow-[4px_4px_0px_#002b26] focus:ring-cyber-cyan",
+    green: "bg-emerald-400 text-cyber-950 border-t-2 border-l-2 border-r-[4px] border-b-[4px] border-t-white/80 border-l-white/80 border-r-emerald-950 border-b-emerald-950 shadow-[3px_3px_0px_#022c22] hover:bg-emerald-300 hover:shadow-[4px_4px_0px_#022c22] focus:ring-emerald-400",
+    rose: "bg-rose-500 text-white border-t-2 border-l-2 border-r-[4px] border-b-[4px] border-t-rose-300/80 border-l-rose-300/80 border-r-rose-950 border-b-rose-950 shadow-[3px_3px_0px_#4c0519] hover:bg-rose-400 hover:shadow-[4px_4px_0px_#4c0519] focus:ring-rose-500",
+    amber: "bg-amber-400 text-cyber-950 border-t-2 border-l-2 border-r-[4px] border-b-[4px] border-t-white/80 border-l-white/80 border-r-amber-950 border-b-amber-950 shadow-[3px_3px_0px_#451a03] hover:bg-amber-300 hover:shadow-[4px_4px_0px_#451a03] focus:ring-amber-400",
+    dark: "bg-slate-800 text-slate-200 border-t-2 border-l-2 border-r-[4px] border-b-[4px] border-t-slate-600 border-l-slate-600 border-r-slate-950 border-b-slate-950 shadow-[3px_3px_0px_#020617] hover:bg-slate-700 hover:text-white focus:ring-slate-400"
   };
 
-  const disabledStyles = "opacity-45 cursor-not-allowed pointer-events-none grayscale";
+  const disabledStyles = "opacity-40 cursor-not-allowed pointer-events-none grayscale shadow-none translate-y-0";
 
   return (
     <button

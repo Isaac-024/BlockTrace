@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, AlertTriangle, CheckCircle2, ArrowRight, ShieldAlert, ExternalLink, HelpCircle, Eye } from 'lucide-react';
+import { Mail, AlertTriangle, CheckCircle2, ArrowRight, Eye, ShieldAlert, Check } from 'lucide-react';
 import { LEVEL_1_EMAILS } from '../data/level1Emails';
 import { VoxelBlock } from '../components/common/VoxelBlock';
 import { VoxelButton } from '../components/common/VoxelButton';
@@ -9,9 +9,14 @@ import { fireClueDiscoverySparks } from '../components/effects/VictoryConfetti';
 import { calculateLevelScore } from '../utils/scoring';
 
 export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentClues }) {
-  const [selectedEmail, setSelectedEmail] = useState(LEVEL_1_EMAILS[0]);
-  const [attempts, setAttempts] = useState(0);
-  const [feedback, setFeedback] = useState(null); // { type: 'success' | 'error', title: '', message: '', details: [] }
+  // A) Inspection State — inspect multiple emails freely
+  const [inspectedEmailId, setInspectedEmailId] = useState(LEVEL_1_EMAILS[0].id);
+  const [inspectedIds, setInspectedIds] = useState(new Set([LEVEL_1_EMAILS[0].id]));
+
+  // B) Final Answer & Submission State — committed on SUBMIT
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedEmailId, setSubmittedEmailId] = useState(null);
+  const [feedback, setFeedback] = useState(null);
   const [solved, setSolved] = useState(isCompleted);
 
   // Sync solved state if isCompleted changes
@@ -19,49 +24,58 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
     setSolved(isCompleted);
     if (!isCompleted) {
       setFeedback(null);
-      setAttempts(0);
-      setSelectedEmail(LEVEL_1_EMAILS[0]);
+      setIsSubmitted(false);
+      setSubmittedEmailId(null);
+      setInspectedEmailId(LEVEL_1_EMAILS[0].id);
+      setInspectedIds(new Set([LEVEL_1_EMAILS[0].id]));
     }
   }, [isCompleted]);
 
-  const handleSelectEmail = (email) => {
-    setSelectedEmail(email);
-    if (!solved) {
-      setFeedback(null);
-    }
+  // Inspection handler: Clicking an email opens it in the inspector
+  const handleInspectEmail = (email) => {
+    setInspectedEmailId(email.id);
+    setInspectedIds((prev) => {
+      const next = new Set(prev);
+      next.add(email.id);
+      return next;
+    });
   };
 
-  const handleExamineAndSubmit = (emailToTest) => {
-    const email = emailToTest || selectedEmail;
-    setAttempts((prev) => prev + 1);
+  const activeEmail = LEVEL_1_EMAILS.find((e) => e.id === inspectedEmailId) || LEVEL_1_EMAILS[0];
 
-    if (email.isMalicious) {
-      // Meaningful event: Correct answer & Clue Found
+  // Final Answer Submission: ONE attempt verified on SUBMIT
+  const handleSubmit = (targetEmail) => {
+    if (isSubmitted || !targetEmail) return;
+
+    // Lock question permanently
+    setIsSubmitted(true);
+    setSubmittedEmailId(targetEmail.id);
+
+    if (targetEmail.isMalicious) {
+      sound.playVoxelBlast();
       sound.playClueFound();
       fireClueDiscoverySparks();
       setSolved(true);
 
-      const earnedScore = calculateLevelScore(250, attempts + 1);
+      const earnedScore = calculateLevelScore(250, 1);
       const earnedXp = 250;
 
       setFeedback({
         type: 'success',
-        title: 'CLUE FOUND // PHISHING ATTEMPT IDENTIFIED',
-        message: 'You successfully spotted the malicious email! Notice the forged sender domain (.ru.cc), manufactured artificial urgency (2-hour timer), unencrypted HTTP link, and aggressive credential harvesting.',
-        clue: email.clueDiscovered,
+        title: 'PHISHING ATTEMPT IDENTIFIED // CLUE #1 UNLOCKED',
+        message: 'Masterful deduction! You successfully identified the phishing lure. Notice the forged sender domain (.ru.cc), manufactured artificial urgency (2-hour timer), unencrypted HTTP link, and aggressive credential harvesting.',
+        clue: targetEmail.clueDiscovered,
         earnedScore,
         earnedXp
       });
 
-      onComplete(1, earnedScore, earnedXp, email.clueDiscovered, attempts + 1);
+      onComplete(1, earnedScore, earnedXp, targetEmail.clueDiscovered, 1);
     } else {
-      // Incorrect!
       sound.playIncorrect();
       setFeedback({
         type: 'error',
         title: 'INCORRECT // LEGITIMATE EMAIL FLAGGED',
-        message: 'Examine the sender, wording, and URL carefully. This email contains no deceptive lures or credential requests. Look for artificial panic, mismatching domain names, or unencrypted external links.',
-        educationalHint: email.educationalFeedback
+        message: 'That email is authentic. The actual malicious email disguised itself with artificial panic, an external domain suffix, and an unencrypted link requesting credentials.'
       });
     }
   };
@@ -69,7 +83,7 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fadeIn">
       {/* Objective Header */}
-      <div className="p-4 bg-cyber-900 border-2 border-slate-700 shadow-voxel flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 bg-cyber-900 border-t-2 border-l-2 border-slate-600 border-r-[4px] border-b-[4px] border-slate-950 shadow-voxel flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <CyberBadge variant="cyan" size="sm">LEVEL 1 // INCIDENT DISPATCH</CyberBadge>
@@ -79,7 +93,7 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
             <span>📧 SPOT THE PHISH</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 font-sans">
-            A malicious attack targeted student accounts. Inspect the 5 inbox messages below and identify the phishing lure.
+            A targeted attack hit campus accounts. Inspect all 5 inbox messages below, review technical headers, and commit your one final accusation.
           </p>
         </div>
 
@@ -100,38 +114,62 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Email Inbox List (Left Column) */}
         <div className="lg:col-span-5 space-y-2.5">
-          <div className="px-3 py-2 bg-cyber-900/90 border border-slate-700 flex items-center justify-between text-xs font-code text-slate-300">
+          <div className="px-3.5 py-2.5 bg-cyber-900/95 border-t border-l border-slate-700 border-r-2 border-b-2 border-slate-950 flex items-center justify-between text-xs font-code text-slate-300 shadow-voxel">
             <span className="flex items-center gap-1.5 font-bold">
               <Mail className="w-3.5 h-3.5 text-cyber-cyan" />
-              INBOX (5 MESSAGES)
+              INBOX ({LEVEL_1_EMAILS.length} MESSAGES)
             </span>
-            <span className="text-[11px] text-slate-400">Click to inspect</span>
+            <span className="text-[11px] text-slate-400">
+              {inspectedIds.size}/5 Inspected
+            </span>
           </div>
 
           <div className="space-y-2">
             {LEVEL_1_EMAILS.map((email) => {
-              const isSelected = selectedEmail.id === email.id;
+              const isCurrentlyInspected = activeEmail.id === email.id;
+              const hasBeenInspected = inspectedIds.has(email.id);
+              const wasSubmittedThis = isSubmitted && submittedEmailId === email.id;
+
+              const postSubmitCorrect = wasSubmittedThis && email.isMalicious;
+              const postSubmitWrong = wasSubmittedThis && !email.isMalicious;
+
               return (
                 <div
                   key={email.id}
-                  onClick={() => handleSelectEmail(email)}
+                  onClick={() => handleInspectEmail(email)}
                   className={`
-                    p-3.5 border-2 cursor-pointer transition-all select-none
-                    ${isSelected 
-                      ? 'border-cyber-cyan bg-cyan-950/40 shadow-voxel-cyan -translate-y-0.5' 
-                      : 'border-slate-800 bg-cyber-900/90 hover:border-slate-600 hover:bg-slate-800/50'}
+                    p-3.5 border-t-2 border-l-2 border-r-[4px] border-b-[4px] transition-all select-none cursor-pointer
+                    ${isSubmitted
+                      ? wasSubmittedThis
+                        ? postSubmitCorrect
+                          ? 'border-emerald-400 bg-emerald-950/60 text-emerald-100 shadow-voxel-green'
+                          : 'border-rose-500 bg-rose-950/60 text-rose-100 shadow-voxel-rose'
+                        : isCurrentlyInspected
+                        ? 'border-slate-600 bg-slate-800/60 text-slate-300'
+                        : 'border-slate-900 bg-cyber-900/80 text-slate-400 opacity-70 hover:opacity-100'
+                      : isCurrentlyInspected
+                      ? 'border-cyber-cyan bg-cyan-950/50 shadow-voxel-cyan -translate-y-0.5'
+                      : 'border-slate-800 bg-cyber-900/90 hover:border-slate-600 hover:bg-slate-800/60 shadow-voxel'}
                   `}
                 >
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <div className="flex items-center gap-2 truncate">
-                      <div className={`w-3 h-3 rounded-none ${email.avatarColor} shrink-0`} />
+                      <div className={`w-3 h-3 ${email.avatarColor} shrink-0 border border-black/40`} />
                       <span className="font-pixel text-[11px] text-slate-200 truncate">
                         {email.senderName}
                       </span>
                     </div>
-                    <span className="font-code text-[10px] text-slate-400 shrink-0">
-                      {email.time}
-                    </span>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {hasBeenInspected && (
+                        <CyberBadge variant="slate" size="xs">
+                          INSPECTED
+                        </CyberBadge>
+                      )}
+                      <span className="font-code text-[10px] text-slate-400">
+                        {email.time}
+                      </span>
+                    </div>
                   </div>
 
                   <h4 className="text-xs font-semibold text-slate-100 line-clamp-1 mb-1 font-sans">
@@ -147,12 +185,12 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
           </div>
         </div>
 
-        {/* Email Preview & Inspection Pane (Right Column) */}
+        {/* Email Preview & Forensic Inspector Pane (Right Column) */}
         <div className="lg:col-span-7">
           <VoxelBlock
-            title="MESSAGE FORENSIC INSPECTOR"
+            title="FORENSIC MESSAGE INSPECTOR"
             icon={Eye}
-            variant={selectedEmail.isMalicious && solved ? "green" : "cyan"}
+            variant="cyan"
             className="h-full flex flex-col justify-between"
             bodyClassName="p-5 flex-1 flex flex-col justify-between space-y-4"
           >
@@ -160,55 +198,60 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
             <div className="space-y-3 border-b border-slate-800 pb-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="font-pixel text-xs sm:text-sm text-slate-100 leading-snug">
-                  {selectedEmail.subject}
+                  {activeEmail.subject}
                 </h3>
-                <span className="font-code text-xs text-slate-400 bg-cyber-950 px-2 py-0.5 border border-slate-800">
-                  {selectedEmail.time} • {selectedEmail.date}
+                <span className="font-code text-xs text-slate-400 bg-cyber-950 px-2.5 py-1 border border-slate-800 shadow-voxel">
+                  {activeEmail.time} • {activeEmail.date}
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-code bg-cyber-950/80 p-3 border border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-code bg-cyber-950/90 p-3 border border-slate-800 shadow-voxel">
                 <div>
                   <span className="text-slate-500">FROM: </span>
-                  <span className="text-slate-200 font-semibold">{selectedEmail.senderName}</span>
+                  <span className="text-slate-200 font-semibold">{activeEmail.senderName}</span>
                 </div>
                 <div>
                   <span className="text-slate-500">ADDRESS: </span>
-                  <span className={`font-mono ${selectedEmail.senderEmail.includes('.ru') ? 'text-rose-400 font-bold' : 'text-slate-300'}`}>
-                    {selectedEmail.senderEmail}
+                  <span className="text-slate-300 font-mono">
+                    {activeEmail.senderEmail}
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Email Body Content */}
-            <div className="flex-1 bg-cyber-950/60 p-4 border border-slate-800/80 rounded-none overflow-y-auto max-h-72">
+            <div className="flex-1 bg-cyber-950/80 p-4 border border-slate-800 rounded-none overflow-y-auto max-h-72 shadow-inner">
               <pre className="font-sans text-xs sm:text-sm text-slate-200 whitespace-pre-wrap leading-relaxed">
-                {selectedEmail.fullBody}
+                {activeEmail.fullBody}
               </pre>
             </div>
 
-            {/* Suspect Flagging Bar */}
+            {/* Submit Action Bar */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-800">
               <div className="text-xs text-slate-400 font-code">
-                {attempts > 0 && <span>Attempts logged: {attempts}</span>}
+                {isSubmitted
+                  ? 'Submission locked.'
+                  : `Accuse "${activeEmail.senderName}" as the phishing lure?`}
               </div>
 
               <VoxelButton
-                variant={selectedEmail.isMalicious ? "rose" : "cyan"}
+                variant={isSubmitted ? "dark" : "rose"}
                 size="md"
-                onClick={() => handleExamineAndSubmit(selectedEmail)}
+                onClick={() => handleSubmit(activeEmail)}
                 icon={AlertTriangle}
                 className="w-full sm:w-auto"
+                disabled={isSubmitted}
               >
-                FLAG AS PHISHING ATTEMPT
+                {isSubmitted
+                  ? 'SUBMISSION LOCKED'
+                  : 'FLAG AS PHISHING ATTEMPT'}
               </VoxelButton>
             </div>
           </VoxelBlock>
         </div>
       </div>
 
-      {/* Animated Clue / Feedback Notification Modal Banner */}
+      {/* Feedback Banner */}
       {feedback && (
         <div
           className={`
@@ -235,15 +278,8 @@ export function Level1Phishing({ onComplete, onNextLevel, isCompleted, currentCl
                 {feedback.message}
               </p>
 
-              {feedback.educationalHint && (
-                <div className="p-3 bg-cyber-950/80 border border-rose-700/60 text-xs font-sans text-slate-300">
-                  <span className="font-bold text-amber-300">INVESTIGATOR HINT: </span>
-                  {feedback.educationalHint}
-                </div>
-              )}
-
               {feedback.clue && (
-                <div className="p-3 bg-cyber-950/80 border-l-4 border-cyber-cyan text-xs font-code text-cyan-300">
+                <div className="p-3 bg-cyber-950/90 border-l-4 border-cyber-cyan text-xs font-code text-cyan-300 shadow-voxel">
                   <span className="font-pixel text-[10px] text-cyber-cyan block mb-1">
                     EVIDENCE UNLOCKED: {feedback.clue.title}
                   </span>

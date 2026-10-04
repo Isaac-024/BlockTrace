@@ -8,11 +8,11 @@ export function CyberBadge({
   icon: Icon
 }) {
   const variantStyles = {
-    cyan: "bg-cyan-950/80 text-cyber-cyan border border-cyber-cyan/50 shadow-[0_0_8px_rgba(0,245,212,0.2)]",
-    green: "bg-emerald-950/80 text-emerald-300 border border-emerald-500/50 shadow-[0_0_8px_rgba(16,185,129,0.2)]",
-    rose: "bg-rose-950/80 text-rose-300 border border-rose-500/50 shadow-[0_0_8px_rgba(244,63,94,0.2)]",
-    amber: "bg-amber-950/80 text-amber-300 border border-amber-500/50 shadow-[0_0_8px_rgba(245,158,11,0.2)]",
-    slate: "bg-slate-800/80 text-slate-300 border border-slate-600/50"
+    cyan: "bg-cyan-950/90 text-cyber-cyan border-t border-l border-cyan-400 border-r-2 border-b-2 border-cyan-950 shadow-[0_0_8px_rgba(0,245,212,0.25)]",
+    green: "bg-emerald-950/90 text-emerald-300 border-t border-l border-emerald-400 border-r-2 border-b-2 border-emerald-950 shadow-[0_0_8px_rgba(16,185,129,0.25)]",
+    rose: "bg-rose-950/90 text-rose-300 border-t border-l border-rose-400 border-r-2 border-b-2 border-rose-950 shadow-[0_0_8px_rgba(244,63,94,0.25)]",
+    amber: "bg-amber-950/90 text-amber-300 border-t border-l border-amber-400 border-r-2 border-b-2 border-amber-950 shadow-[0_0_8px_rgba(245,158,11,0.25)]",
+    slate: "bg-slate-800/90 text-slate-300 border-t border-l border-slate-600 border-r-2 border-b-2 border-slate-950"
   };
 
   const sizeStyles = {

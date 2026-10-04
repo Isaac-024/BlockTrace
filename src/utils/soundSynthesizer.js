@@ -199,7 +199,7 @@ class SoundEngine {
     });
   }
 
-  // 5. Final Victory: soft, celebratory melodic resolution
+  // 5. Final Victory: celebratory melodic resolution
   playVictory() {
     if (!this.shouldPlay('victory', 1500)) return;
     this.init();
@@ -233,6 +233,100 @@ class SoundEngine {
       osc.start(now + time);
       osc.stop(now + time + dur + 0.05);
     });
+  }
+
+  // 6. Original Voxel Blast / TNT-style Sound Effect: short fuse crackle -> deep punch -> rumbling tail
+  playVoxelBlast() {
+    if (!this.shouldPlay('voxel_blast', 800)) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+
+    // A) Short Fuse / Build-up crackle (0.0s - 0.08s)
+    try {
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.08);
+      const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.5));
+      }
+
+      const whiteNoise = this.ctx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+
+      const fuseFilter = this.ctx.createBiquadFilter();
+      fuseFilter.type = 'bandpass';
+      fuseFilter.frequency.setValueAtTime(600, now);
+      fuseFilter.frequency.exponentialRampToValueAtTime(2400, now + 0.07);
+      fuseFilter.Q.setValueAtTime(3, now);
+
+      const fuseGain = this.ctx.createGain();
+      fuseGain.gain.setValueAtTime(0.001, now);
+      fuseGain.gain.linearRampToValueAtTime(0.08, now + 0.04);
+      fuseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+
+      whiteNoise.connect(fuseFilter);
+      fuseFilter.connect(fuseGain);
+      fuseGain.connect(this.ctx.destination);
+
+      whiteNoise.start(now);
+      whiteNoise.stop(now + 0.09);
+    } catch (e) {
+      // Audio buffer fallback safe
+    }
+
+    // B) Deep Impact & Noise Burst (starts at now + 0.07s)
+    const impactTime = now + 0.07;
+
+    // Sub-bass punch oscillator (deep pitch drop 130Hz -> 30Hz)
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'triangle';
+    subOsc.frequency.setValueAtTime(135, impactTime);
+    subOsc.frequency.exponentialRampToValueAtTime(28, impactTime + 0.38);
+
+    subGain.gain.setValueAtTime(0.001, impactTime);
+    subGain.gain.linearRampToValueAtTime(0.14, impactTime + 0.02);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, impactTime + 0.42);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+
+    subOsc.start(impactTime);
+    subOsc.stop(impactTime + 0.45);
+
+    // Explosive blast noise body (lowpass filtered noise)
+    try {
+      const blastLen = Math.floor(this.ctx.sampleRate * 0.55);
+      const blastBuffer = this.ctx.createBuffer(1, blastLen, this.ctx.sampleRate);
+      const blastData = blastBuffer.getChannelData(0);
+      for (let i = 0; i < blastLen; i++) {
+        blastData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / blastLen, 1.8);
+      }
+
+      const blastSource = this.ctx.createBufferSource();
+      blastSource.buffer = blastBuffer;
+
+      const blastFilter = this.ctx.createBiquadFilter();
+      blastFilter.type = 'lowpass';
+      blastFilter.frequency.setValueAtTime(1800, impactTime);
+      blastFilter.frequency.exponentialRampToValueAtTime(120, impactTime + 0.45);
+
+      const blastGain = this.ctx.createGain();
+      blastGain.gain.setValueAtTime(0.001, impactTime);
+      blastGain.gain.linearRampToValueAtTime(0.12, impactTime + 0.015);
+      blastGain.gain.exponentialRampToValueAtTime(0.0001, impactTime + 0.55);
+
+      blastSource.connect(blastFilter);
+      blastFilter.connect(blastGain);
+      blastGain.connect(this.ctx.destination);
+
+      blastSource.start(impactTime);
+      blastSource.stop(impactTime + 0.58);
+    } catch (e) {
+      // Audio buffer fallback safe
+    }
   }
 }
 

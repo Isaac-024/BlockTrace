@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Play, HelpCircle, Terminal, Award, CheckCircle2, ChevronRight, Zap, Lock, Skull } from 'lucide-react';
+import { Shield, Play, HelpCircle, Terminal, Award, CheckCircle2, ChevronRight, Zap, Lock, Skull, BookOpen, Layers } from 'lucide-react';
 import { VoxelButton } from '../components/common/VoxelButton';
 import { VoxelBlock } from '../components/common/VoxelBlock';
 import { CyberBadge } from '../components/common/CyberBadge';
@@ -23,7 +23,7 @@ export function HomeScreen({ state, onStart, onNavigate }) {
       <div className="relative z-10 w-full max-w-4xl mx-auto space-y-8 py-6">
         {/* Top Status Pill */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyber-900/90 border-2 border-cyber-cyan shadow-[0_0_15px_rgba(0,245,212,0.25)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-cyber-900 border-t border-l border-cyan-400 border-r-2 border-b-2 border-cyan-950 shadow-[0_0_15px_rgba(0,245,212,0.25)]">
             <span className="w-2 h-2 bg-rose-500 animate-ping" />
             <span className="font-pixel text-[10px] text-cyber-cyan uppercase tracking-widest">
               INCIDENT ALERT // THREAT DETECTED
@@ -39,12 +39,12 @@ export function HomeScreen({ state, onStart, onNavigate }) {
               BLOCKTRACE
             </h1>
             {/* Voxel decorative cube pins */}
-            <div className="hidden sm:block absolute -top-3 -right-6 w-4 h-4 bg-cyber-cyan border border-white/80 rotate-12 shadow-[0_0_10px_#00f5d4]" />
-            <div className="hidden sm:block absolute -bottom-2 -left-6 w-3 h-3 bg-emerald-400 border border-white/80 -rotate-12 shadow-[0_0_8px_#10b981]" />
+            <div className="hidden sm:block absolute -top-3 -right-6 w-4 h-4 bg-cyber-cyan border-t-2 border-l-2 border-white border-r-2 border-b-2 border-cyan-950 rotate-12 shadow-[0_0_10px_#00f5d4]" />
+            <div className="hidden sm:block absolute -bottom-2 -left-6 w-3.5 h-3.5 bg-emerald-400 border-t-2 border-l-2 border-white border-r-2 border-b-2 border-emerald-950 -rotate-12 shadow-[0_0_8px_#10b981]" />
           </div>
 
           {/* Case Title */}
-          <div className="flex items-center justify-center gap-2 font-pixel text-sm sm:text-base md:text-lg text-emerald-400 tracking-widest uppercase">
+          <div className="flex items-center justify-center gap-2 font-pixel text-xs sm:text-sm md:text-base text-emerald-400 tracking-widest uppercase">
             <span className="text-slate-500">[</span>
             <span className="text-cyber-cyan">{CASE_METADATA.caseNumber}:</span>
             <span className="text-slate-100">{CASE_METADATA.name}</span>
@@ -52,7 +52,7 @@ export function HomeScreen({ state, onStart, onNavigate }) {
           </div>
 
           {/* Subtitle */}
-          <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-300 font-sans tracking-wide leading-relaxed">
+          <p className="max-w-xl mx-auto text-xs sm:text-sm text-slate-300 font-sans tracking-wide leading-relaxed">
             "{CASE_METADATA.subtitle}"
           </p>
         </div>
@@ -64,7 +64,7 @@ export function HomeScreen({ state, onStart, onNavigate }) {
             size="lg"
             onClick={onStart}
             icon={Play}
-            className="w-full sm:w-auto text-xs sm:text-sm px-8 py-4 shadow-[4px_4px_0px_#005c50] hover:scale-105"
+            className="w-full sm:w-auto text-xs sm:text-sm px-8 py-4 shadow-[4px_4px_0px_#002b26]"
           >
             {isStarted ? "RESUME INVESTIGATION" : "START INVESTIGATION"}
           </VoxelButton>
@@ -118,7 +118,7 @@ export function HomeScreen({ state, onStart, onNavigate }) {
           >
             <div className="space-y-3 font-code text-xs">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">CASE NUMBER:</span>
+                <span className="text-slate-400">CASE FILE:</span>
                 <span className="text-slate-200">#01-CORE</span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -153,12 +153,12 @@ export function HomeScreen({ state, onStart, onNavigate }) {
                     disabled={!isUnlocked}
                     onClick={() => onNavigate(`level-${lvl.id}`)}
                     className={`
-                      w-full px-2.5 py-1.5 text-left border flex items-center justify-between transition-colors
+                      w-full px-2.5 py-1.5 text-left border-t border-l border-r-2 border-b-2 flex items-center justify-between transition-all select-none
                       ${isDone 
-                        ? 'border-emerald-800/80 bg-emerald-950/40 text-emerald-300 hover:bg-emerald-900/50' 
+                        ? 'border-emerald-600 border-r-emerald-950 border-b-emerald-950 bg-emerald-950/40 text-emerald-300 hover:bg-emerald-900/50 shadow-voxel' 
                         : isUnlocked 
-                        ? 'border-cyan-800/80 bg-cyan-950/40 text-cyber-cyan hover:bg-cyan-900/50' 
-                        : 'border-slate-800 bg-cyber-950/60 text-slate-600 cursor-not-allowed'}
+                        ? 'border-cyan-600 border-r-cyan-950 border-b-cyan-950 bg-cyan-950/40 text-cyber-cyan hover:bg-cyan-900/50 shadow-voxel' 
+                        : 'border-slate-800 border-r-slate-950 border-b-slate-950 bg-cyber-950/60 text-slate-600 cursor-not-allowed'}
                     `}
                   >
                     <div className="flex items-center gap-2 truncate">

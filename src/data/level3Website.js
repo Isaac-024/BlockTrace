@@ -50,6 +50,19 @@ export const LEVEL_3_CLUES = [
       notes: "The form transmits data directly to an unmonitored external server script: 'POST http://194.38.20.14:8080/collect.php'."
     },
     educationalTip: "Look at what is requested. Official SSO systems do not ask for your raw PIN alongside your password in this manner."
+  },
+  {
+    id: "footer-cert",
+    targetName: "Footer & Legal Infrastructure",
+    elementSelector: "footer",
+    icon: "📋",
+    title: "Certificate & Domain Registration Telemetry",
+    inspectionDetail: {
+      status: "UNREGISTERED SHELL DOMAIN",
+      threat: "HIGH: Offshore Anonymous Proxy",
+      notes: "WHOIS telemetry indicates domain 'campus-login-auth.xyz' was registered only 2 hours prior to the dispatch. All copyright and privacy links are non-functional dead anchors."
+    },
+    educationalTip: "Newly registered domains paired with non-functional corporate links strongly indicate temporary phishing infrastructure."
   }
 ];
 

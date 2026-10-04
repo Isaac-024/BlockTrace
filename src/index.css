@@ -6,67 +6,107 @@
   color-scheme: dark;
 }
 
-/* Custom voxel styling & block bevels */
+/* ========================================================
+   VOXEL & BLOCK-GAME DESIGN SYSTEM
+   Original stylized block surfaces, bevels, slots, and rivets
+   ======================================================== */
+
+/* Block Panels with 3D extrusions */
 .voxel-panel {
-  background: #101827;
-  border-top: 3px solid #2d4263;
-  border-left: 3px solid #2d4263;
-  border-right: 3px solid #080d15;
-  border-bottom: 3px solid #080d15;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  background: #0f172a;
+  border-top: 3px solid #334155;
+  border-left: 3px solid #334155;
+  border-right: 3px solid #020617;
+  border-bottom: 3px solid #020617;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.8), inset 1px 1px 0px 0px rgba(255, 255, 255, 0.1);
 }
 
 .voxel-panel-cyan {
-  background: #0d1726;
+  background: #07131f;
   border-top: 3px solid #00f5d4;
   border-left: 3px solid #00f5d4;
-  border-right: 3px solid #004d43;
-  border-bottom: 3px solid #004d43;
-  box-shadow: 0 0 15px rgba(0, 245, 212, 0.25), 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-right: 3px solid #003831;
+  border-bottom: 3px solid #003831;
+  box-shadow: 4px 4px 0px 0px #00241f, 0 0 20px rgba(0, 245, 212, 0.25), inset 1px 1px 0px 0px rgba(255, 255, 255, 0.2);
 }
 
 .voxel-panel-green {
-  background: #0d1e1c;
+  background: #051a14;
   border-top: 3px solid #10b981;
   border-left: 3px solid #10b981;
-  border-right: 3px solid #04432f;
-  border-bottom: 3px solid #04432f;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.25), 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-right: 3px solid #064e3b;
+  border-bottom: 3px solid #064e3b;
+  box-shadow: 4px 4px 0px 0px #022c22, 0 0 20px rgba(16, 185, 129, 0.25), inset 1px 1px 0px 0px rgba(255, 255, 255, 0.2);
 }
 
 .voxel-panel-rose {
-  background: #1f1118;
+  background: #1c0b12;
   border-top: 3px solid #f43f5e;
   border-left: 3px solid #f43f5e;
-  border-right: 3px solid #5c0b1e;
-  border-bottom: 3px solid #5c0b1e;
-  box-shadow: 0 0 15px rgba(244, 63, 94, 0.25), 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-right: 3px solid #881337;
+  border-bottom: 3px solid #881337;
+  box-shadow: 4px 4px 0px 0px #4c0519, 0 0 20px rgba(244, 63, 94, 0.25), inset 1px 1px 0px 0px rgba(255, 255, 255, 0.2);
 }
 
+.voxel-panel-amber {
+  background: #1a1205;
+  border-top: 3px solid #f59e0b;
+  border-left: 3px solid #f59e0b;
+  border-right: 3px solid #78350f;
+  border-bottom: 3px solid #78350f;
+  box-shadow: 4px 4px 0px 0px #451a03, 0 0 20px rgba(245, 158, 11, 0.25), inset 1px 1px 0px 0px rgba(255, 255, 255, 0.2);
+}
+
+/* Block Inventory Slot */
+.voxel-slot {
+  background: #090e17;
+  border-top: 2px solid #020617;
+  border-left: 2px solid #020617;
+  border-right: 2px solid #1e293b;
+  border-bottom: 2px solid #1e293b;
+  box-shadow: inset 2px 2px 0px 0px rgba(0, 0, 0, 0.9), inset -1px -1px 0px 0px rgba(255, 255, 255, 0.05);
+  transition: all 0.1s ease;
+}
+
+.voxel-slot-active {
+  background: #0d1e2e;
+  border-top: 2px solid #00f5d4;
+  border-left: 2px solid #00f5d4;
+  border-right: 2px solid #004d43;
+  border-bottom: 2px solid #004d43;
+  box-shadow: 0 0 10px rgba(0, 245, 212, 0.4), inset 1px 1px 0px 0px rgba(255, 255, 255, 0.3);
+}
+
+.voxel-slot:hover:not(.voxel-slot-active) {
+  border-color: #475569;
+  background: #111a2a;
+}
+
+/* 3D Tactile Voxel Buttons */
 .voxel-btn {
   position: relative;
-  transition: all 0.1s ease;
+  transition: transform 0.06s ease, box-shadow 0.06s ease, filter 0.06s ease;
   user-select: none;
 }
 
-.voxel-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.8) !important;
+.voxel-btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px 0px rgba(0,0,0,0) !important;
 }
 
 /* Cyber Matrix Background Grid */
 .cyber-grid {
   background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, rgba(0, 245, 212, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 245, 212, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(0, 245, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 245, 212, 0.05) 1px, transparent 1px);
 }
 
 .voxel-cube-grid {
-  background-size: 48px 48px;
+  background-size: 40px 40px;
   background-image: 
-    linear-gradient(to right, rgba(20, 184, 166, 0.06) 2px, transparent 2px),
-    linear-gradient(to bottom, rgba(20, 184, 166, 0.06) 2px, transparent 2px);
+    linear-gradient(to right, rgba(30, 41, 59, 0.6) 2px, transparent 2px),
+    linear-gradient(to bottom, rgba(30, 41, 59, 0.6) 2px, transparent 2px);
 }
 
 /* Subtle CRT Scanline effect */
@@ -104,11 +144,16 @@
 }
 ::-webkit-scrollbar-track {
   background: #090e17;
+  border-left: 1px solid #1e293b;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e2c45;
-  border: 1px solid #33486e;
+  background: #1e293b;
+  border-top: 2px solid #334155;
+  border-left: 2px solid #334155;
+  border-right: 2px solid #020617;
+  border-bottom: 2px solid #020617;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #00f5d4;
+  border-color: #009e89;
 }
